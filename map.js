@@ -142,7 +142,7 @@ function getData(layer, static=false) {
 	}
 	
 	$.getJSON('data.php', {lyr:layer, bounds:map.getBounds().toBBoxString(), zoom:map.getZoom(), created:created})
-	.done(function(json) {
+	.always(function(json) {
 		if (json != false) {
 			data[layer] = json;
 			drawLayer(layer);
@@ -173,7 +173,7 @@ function getData(layer, static=false) {
 function updateSource(layer, static) {
 	console.log(layer + ' source update started');
 	$.getJSON('update.php', {lyr:layer})
-	.done(function(json) {
+	.always(function(json) {
 		//decide timeout
 		var timeout = 60;
 		if ((typeof json.nextrun !== 'undefined') && (json.nextrun > 0) && (json.nextrun < 300)) {

@@ -47,7 +47,7 @@ $output = array();
 $lanes = array();
 
 //gzdecode if necessary
-if ($gzdecode == true) $data = gzdecode($data);
+if ($gzdecode == true) $data = @gzdecode($data);
 if ($data !== FALSE) {
 	try {			
 		$data = @simplexml_load_string($data);

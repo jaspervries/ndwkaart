@@ -44,11 +44,11 @@ $output = array();
 //gzdecode if necessary
 //get data
 $datex = @file_get_contents($datasource['drip']);
-if ($gzdecode == TRUE) $datex = gzdecode($datex);
+if ($gzdecode == TRUE) $datex = @gzdecode($datex);
 //process XML
 if ($datex !== FALSE) {
 	try {			
-		$datex = simplexml_load_string($datex);
+		$datex = @simplexml_load_string($datex);
 		if ($datex !== FALSE) {
 			$datex = $datex->children('SOAP', true)->Body->children(); //read soap envelope
 			//check publicationtime
