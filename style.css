@@ -1,0 +1,187 @@
+/*
+	ndwkaart - matrixbordenkaart
+	Copyright (C) 2018, 2025 Jasper Vries
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+@font-face {
+  font-family: 'CdmsBdType1';
+  /* this font cannot be distributed for copyright reasons */
+  src: url('lib/cdmsfont/CdmsBdType1.ttf');
+}
+
+html, body, #map {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: small;
+}
+
+span.xsmall {
+	font-size: x-small;
+}
+
+#data_warnings {
+	display: block;
+	position: fixed;
+	top: 10px;
+	left: 50%;
+	transform: translateX(-50%);
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	z-index: 1500;
+}
+
+#data_warnings li {
+	background-color: #FFF;
+	color: #C00;
+	list-style: none;
+	border: 1px solid #FFF;
+	border-radius: 5px;
+	padding: 2px 4px;
+	margin: 4px;
+	font-weight: bold;
+}
+
+.warning {
+	padding: 16px;
+	border: 1px solid #FC0;
+	background-color: #FF9;
+	border-radius: 5px;	
+}
+.info {
+	padding: 16px;
+	border: 1px solid blue;
+	background-color: powderblue;
+	border-radius: 5px;	
+}
+div#helptext {
+	position: absolute;
+	top: 10%;
+	left: 10%;
+	width: 75%;
+	height: 75%;
+	overflow-y: scroll;
+	z-index: 1000;
+	text-align: left;
+	display: none;
+}
+@media (min-width: 1000px) {
+	div#helptext {
+		left: 22%;
+		width: 50%;
+	}
+}
+
+span.textdrip {
+	display: inline-block;
+	text-align: center;
+	font-family: CdmsBdType1, Arial, Helvetica, sans-serif;
+	font-size: 18pt;
+	background-color: #000;
+	color: #FFF;
+	padding: 4px;
+	min-width: 192px;
+	min-height: 48px;
+	white-space: nowrap;
+}
+
+fieldset {
+	border: 1px solid #999;
+	border-radius: 5px;
+	margin: 8px 0;
+}
+legend {
+	font-weight: bold;
+}
+
+/*
+map related
+*/
+div#map-options-container {
+	position:absolute;
+	z-index: 999;
+	right:8px;
+	top:8px;
+	border: 1px solid #CCC;
+	border-radius: 5px;
+	background-color: #FFF;
+	opacity: 0.8;
+	padding: 8px;
+	text-align: left;
+	font-size: 0.9em;
+}
+#map-options-container ul, #map-options-container li {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+#map-options-container fieldset {
+	border: 1px solid #CCC;
+	border-radius: 4px;
+	margin: 8px 0;
+}
+#map-options-container fieldset:first-of-type {
+	margin-top: 0;
+}
+#map-options-container fieldset:last-of-type {
+	margin-bottom: 0;
+}
+#map-options-container fieldset.hidden {
+	border-width: 1px 0 0 0;
+	border-radius: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+#map-options-container fieldset legend {
+	cursor: pointer;
+}
+#map-options-container fieldset legend::before {
+	content: "△ ";
+
+}
+#map-options-container fieldset.hidden legend::before {
+	content: "▽ ";
+}
+#map-options-container #help {
+	cursor: pointer;
+	display: block;
+	position: absolute;
+	right: 0;
+	top: 0;
+	margin: 8px;
+	width: 1.2em;
+	height: 1.2em;
+	border: 2px solid blue;
+	border-radius: 1.2em;
+	background-color: white;
+	color: blue;
+	font-weight: bold;
+	font-size: larger;
+	text-align: center;
+}
+
+.leaflet-popup-content h1 {
+	font-size: small;
+	font-weight: bold;
+	margin: 0 0 8px 0;
+}
+
+.leaflet-popup-content p {
+	margin: 0;
+}

@@ -1,0 +1,83 @@
+<!doctype HTML>
+<!--
+	ndwkaart - matrixbordenkaart
+	Copyright (C) 2018, 2025 Jasper Vries
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link type="text/css" rel="stylesheet" href="lib/leaflet/leaflet.css">
+<link type="text/css" rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="images/msi_source_16/g.png">
+<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
+<script type="text/javascript" src="lib/leaflet-rotatedmarker/leaflet.rotatedMarker.js"></script>
+<script type="text/javascript" src="lib/js-cookie/js.cookie.min.js"></script>
+<script type="text/javascript" src="map.js"></script>
+<title>Matrixbordenkaart</title>
+<meta name="description" content="Matrixbordenkaart toont de actuele stand van rijstrooksignalering (matrixborden) en DRIPs in Nederland. De actuele data is afkomstig van NDW.">
+<meta name="keywords" content="matrixborden,matrixborden live,live matrixborden,rijstrooksignalering,DRIP,DRIPs,dynamische routeinformatiepanelen,DRIPs live,live DRIPs,NDW">
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="map-options-container">
+    <div id="help" title="help">?</div>
+	<fieldset>
+        <legend>Lagen</legend>
+        <ul id="map-layers">
+        </ul>
+    </fieldset>
+    <fieldset>
+        <legend>Kaartachtergrond</legend>
+        <ul id="map-tile"></ul>
+    </fieldset>
+</div>
+
+<ul id="data_warnings"></ul>
+
+<div class="info" id="helptext">
+    <h1>Matrixbordenkaart</h1>
+    <p>Deze website toont de actuele stand van de <a href="https://nl.wikipedia.org/wiki/Rijstrooksignalering">rijstrooksignalering (matrixborden)</a> en <a href="https://nl.wikipedia.org/wiki/DRIP">DRIPs</a>. Daarnaast worden actuele incidenten getoond. De actuele data is afkomstig van <a href="https://opendata.ndw.nu/">NDW</a>.</p>
+
+    <h2>Kaartlagen</h2>
+    <p>Rechtsboven kun je kiezen welke kaartlagen wilt zien. De data van iedere kaartlaag wordt op de achtergrond automatisch ververst.Dit gebeurt ongeveer iedere minuut. Achter de naam van de kaartlaag kun je zien wat het tijdstip van de laatste update is. Als je de website opent en er zit verder niemand op de site, dan duurt het even om de actuele data op te halen. Je ziet hiervan een melding in beeld, welke verdwijnt zodra actuele gegevens getoond worden.</p>
+    <p>Als iets ontbreekt of niet klopt in de datasets, dan wordt dit vanzelf niet of onjuist weergegeven. De data van NDW wordt getoond zoals deze is; er vindt geen controle op volledigheid of juistheid plaats.</p>
+
+    <h3>Kaartlaag: drip</h3>
+    <p>De kaartlaag <em>drip</em> toont locaties van Dynamische RouteInformatie Panelen (DRIPs). Als je op een DRIP klikt, dan krijg je in een popup het actuele beeld te zien. Het beeld in de popup ververst niet automatisch, daarvoor moet je de popup sluiten en opnieuw openen.</p>
+    <p>Het inlezen van locaties van DRIPs gebeurt (nog) niet automatisch. Hierdoor kunnen DRIPs ontbreken of DRIPs die niet meer bestaan juist nog getoond worden. Niet van alle DRIPs is de rijrichting aangegeven. De rijrichting is niet aanwezig in de data van NDW, maar wordt opgehaald uit de assetwebsite. Hieruit worden ook de wegbeheerder en het type van de DRIP overgenomen. Als de locatie in een van beide databronnen te veel afwijkt, worden gegevens uit de assetwebsite niet overgenomen. Het kan ook voorkomen dat DRIPs niet aanwezig zijn in de assetwebsite.</p>
+
+    <h3>Kaartlaag: msi</h3>
+    <p>De kaartlaag <em>msi</em> (Message Sign Interface) toont rijstrooksignalering, ook wel matrixsignaalgevers of in de volksmond matrixborden genoemd. De matrixsignaalgevers worden alleen getoond als er op tenminste &eacute;&eacute;n signaalgever in een raai een beeld wordt getoond. Een raai zijn alle signaalgevers die naast elkaar boven &eacute;&eacute;n rijbaan hangen.</p>
+    <p>Als je met de muisaanwijzer op een raai signaalgevers gaat staan, dan zie je het wegnummer en hectometrering.</p>
+    <p>Als je (te) ver uitzoomt, dan worden de matrixborden over elkaar heen getoond. Dit is in het bijzonder ook het geval bij parallelrijbanen. Zoom in dat geval verder in om te zien op welke rijbaan de raai betrekking heeft.</p>
+    <p>De gegevens in deze kaartlaag zijn tot een minuut ouder dan het tijdstip dat wordt getoond. In tegenstelling tot de andere kaartlagen is er in de datastroom van NDW namelijk geen publicatietijdstip aanwezig en wordt in plaats daarvan het tijdstip getoond van het moment dat de gegevens door de server bij NDW zijn opgehaald.</p>
+    <p>Het inlezen van locaties van matrixsignaalgevers gebeurt (nog) niet automatisch. Hierdoor kunnen matrixsignaalgevers ontbreken.</p>
+
+    <h3>Kaartlaag: incidents</h3>
+    <p>De kaartlaag <em>incidents</em> toont actuele incidenten. Dit zijn met name ongevallen en pechgevallen, wat ook aan de pictogrammen op de kaart te zien is. Soms is er sprake van een ander soort incident, dan wordt een pictogram met een lege driehoek getoond. Klik op het pictogram om een popup te openen met meer informatie. Op dit moment wordt enkel de (Engelstalige) ruwe informatie uit de datastroom getoond.</p>
+
+    <h2>Kaartachtergrond</h2>
+    <p>Rechtsboven kun je ook de kaartachtergrond wijzigen, door eerst het deelvenster uit te vouwen en daarna een van de opties te kiezen.</p>
+
+    <p>Klik om deze melding te sluiten.</p>
+</div>
+
+</body>
+</html>
