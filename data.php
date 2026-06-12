@@ -1,7 +1,7 @@
 <?php
 /*
 	ndwkaart - matrixbordenkaart
-	Copyright (C) 2018, 2025 Jasper Vries
+	Copyright (C) 2018, 2025-2026 Jasper Vries
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ require('config.cfg.php');
 
 $db['link'] = mysqli_connect($cfg_db['host'], $cfg_db['user'], $cfg_db['pass'], $cfg_db['db']);
 
-$layers = array('msi', 'drip', 'driptable', 'incidents');
+$layers = array('msi', 'drip', 'driptable', 'srti');
 
 if (in_array($_GET['lyr'], $layers)) {
 	//check created

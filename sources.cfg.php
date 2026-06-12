@@ -32,7 +32,7 @@ $datasource['drip'] = 'https://opendata.ndw.nu/dynamische_route_informatie_panee
 
 $datasource['assetwebsite'] = 'voorbeeldfiles/assets_202510241414.json';
 
-$datasource['incidents'] = 'https://opendata.ndw.nu/incidents.xml.gz';
-//$datasource['incidents'] = 'voorbeeldfiles/incidents.xml.gz';
+$datasource['srti'] = 'https://opendata.ndw.nu/veiligheidsgerelateerde_berichten_srti.xml.gz';
+//$datasource['incidents'] = 'voorbeeldfiles/veiligheidsgerelateerde_berichten_srti.xml.gz';
 
 ?>

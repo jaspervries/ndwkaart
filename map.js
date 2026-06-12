@@ -20,7 +20,7 @@
 * initialize global variables
 */
 var map; //map object
-var layers = ['drip', 'msi', 'incidents']; //definition list of dynamic layers
+var layers = ['drip', 'msi', 'srti']; //definition list of dynamic layers
 var staticlayers = ['driptable'] //definition list of static layers
 var activemaplayers = [];
 
@@ -274,9 +274,9 @@ function drawLayer(layer) {
 		}
 		markers[layer] = newmarkers;
 	}
-	else if (layer == 'incidents') {
+	else if (layer == 'srti') {
 		/*
-		incidents layer
+		srti layer
 		this layer doesn't always contain all markers
 		to prevent a flicker effect, on each refresh a new layer is drawn and the old layer destroyed
 		a Leaflet layergroup may be useful here, but doesn't appear to add much value at this point
@@ -425,10 +425,11 @@ function openPopupIncidents(e, item) {
 	//TODO: update popup contents when it is open
 	var popup = L.popup()
     .setLatLng(e.latlng);
-	var popupcontent = '<h1>Incident</h1><p>';
+	var popupcontent = '<h1>Veiligheidsgerelateerd bericht</h1><p>';
 	popupcontent += 'Type: ' + item.type + '<br>';
+	popupcontent += 'Subtype: ' + item.subtype + '<br>';
 	$.each(item, function(key, val) {
-		if ((key != 'type') && (key != 'lat') && (key != 'lon')) {
+		if ((key != 'type') && (key != 'subtype') && (key != 'lat') && (key != 'lon')) {
 			popupcontent += key + ': ' + val + '<br>';
 		}
 	});
