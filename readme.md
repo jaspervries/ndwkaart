@@ -24,7 +24,7 @@ De broncode is beschikbaar onder de voorwaarden van de GNU GPL versie 3 of hoger
 Voor bibliotheken in de map lib/ kunnen andere voorwaarden van toepassing zijn. Zie hiervoor het bestand met licentieinformatie in de submap van elke bibliotheek.
 
 	ndwkaart - matrixbordenkaart
-	Copyright (C) 2018, 2025 Jasper Vries
+	Copyright (C) 2018, 2025-2026 Jasper Vries
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

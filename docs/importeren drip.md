@@ -7,3 +7,7 @@ De locatietabel van NDW bevat geen orientatie (draairichting) voor DRIPs en ook 
 Het importscript biedt ondersteuning om deze aanvullende informatie op te halen uit de assetwebsite. Een uittreksel hiervan is opgenomen in de map voorbeeldfiles/. Als je bekend bent met de assetwebsite, dan kun je vanuit sources.cfg.php hier rechtstreeks naar linken.
 
 De koppeling tussen de NDW locatietabel en de assetwebsite gebeurt op basis van coordinaten. Voor iedere DRIP in de NDW locatietabel wordt de dichtstbijzijnde DRIP in de assetwebsitetabel gezocht. Wanneer deze maximaal 50 meter uit elkaar liggen, dan wordt aangenomen dat het dezelfde DRIP betreft en dan wordt de naam, wegbeheerder, locatie, orientatie en type DRIP overgenomen uit de assetwebsitetabel. Indien er geen DRIP binnen 50 meter gevonden wordt, dan wordt enkel de informatie uit de NDW locatietabel gebruikt en heeft de DRIP bij gevolg ook geen draairichting op de kaart.
+
+## Update DATEX II versie 3
+
+Medio 2026 is het dataformaat aan de zijde van NDW gewijzigd. Nieuw is (o.a.) de orientatie (draairichting) voor DRIPs, wat de koppeling met de assetwebsite wat minder noodzakelijk maakt. Ook zijn de locatietabel en de actuele data samengevoegd in één bestand. update_drip.php en import_drip.php verwerken hierdoor nu verschillende onderdelen van hetzelfde bestand. De scripts zijn wel los gehouden, omdat de locatietabel niet noodzakelijkerwijs iedere minuut bijgewerkt moet worden.

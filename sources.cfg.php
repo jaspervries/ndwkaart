@@ -1,7 +1,7 @@
 <?php
 /*
 	ndwkaart - matrixbordenkaart
-	Copyright (C) 2018, 2025 Jasper Vries
+	Copyright (C) 2018, 2025-2026 Jasper Vries
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,13 +27,10 @@ $datasource['msi'] = 'https://opendata.ndw.nu/Matrixsignaalinformatie.xml.gz';
 $datasource['mst'] = 'http://opendata.ndw.nu/measurement_current.xml.gz';
 $datasource['mst'] = 'voorbeeldfiles/measurement_current.xml.gz';
 
-$datasource['driptable'] = 'https://opendata.ndw.nu/LocatietabelDRIPS.xml.gz';
-//$datasource['driptable'] = 'voorbeeldfiles/LocatietabelDRIPS.xml.gz';
+$datasource['drip'] = 'https://opendata.ndw.nu/dynamische_route_informatie_paneel.xml.gz';
+//$datasource['drip'] = 'voorbeeldfiles/dynamische_route_informatie_paneel.xml.gz';
 
 $datasource['assetwebsite'] = 'voorbeeldfiles/assets_202510241414.json';
-
-$datasource['drip'] = 'https://opendata.ndw.nu/DRIPS.xml.gz';
-//$datasource['drip'] = 'voorbeeldfiles/DRIPS.xml.gz';
 
 $datasource['incidents'] = 'https://opendata.ndw.nu/incidents.xml.gz';
 //$datasource['incidents'] = 'voorbeeldfiles/incidents.xml.gz';

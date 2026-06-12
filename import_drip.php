@@ -1,7 +1,7 @@
 <?php
 /*
 	ndwkaart - matrixbordenkaart
-	Copyright (C) 2025 Jasper Vries
+	Copyright (C) 2025-2026 Jasper Vries
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -131,137 +131,174 @@ if (mysqli_errno($db['link'])) {
 //get data
 write_log('update driptable');
 $output = array();
-$datex = @file_get_contents($datasource['driptable']);
+$datex = @file_get_contents($datasource['drip']);
 if ($gzdecode == TRUE) $datex = gzdecode($datex);
 //process XML
 if ($datex !== FALSE) {
-	try {			
-		$datex = simplexml_load_string($datex);
-		if ($datex !== FALSE) {
-			$datex = $datex->children('SOAP', true)->Body->children(); //read soap envelope
-			//TODO: $datex->d2LogicalModel->payloadPublication->publicationTime
-			//get measurement data
-			foreach ($datex->d2LogicalModel->payloadPublication->vmsUnitTable->vmsUnitRecord as $vmsUnitRecord) {
-				
-				if (!empty($vmsUnitRecord['id'])) {
-					/*$vmsUnitRecord['id']; //key
-					$vmsUnitRecord['version'];*/
+	try {
+		// Load into SimpleXML
+		$xml = @simplexml_load_string($datex);
 
-					foreach ($vmsUnitRecord->vmsRecord as $vmsRecord) {
-						/*$vmsRecord['vmsIndex']; //key
-						$vmsRecord->vmsRecord->vmsDescription->values->value;
-						$vmsRecord->vmsRecord->vmsPhysicalMounting;
-						$vmsRecord->vmsRecord->vmsType;
-						$vmsRecord->vmsRecord->vmsLocation->locationForDisplay->latitude;
-						$vmsRecord->vmsRecord->vmsLocation->locationForDisplay->longitude;
-						$vmsRecord->vmsRecord->vmsLocation->supplementaryPositionalDescription->affectedCarriagewayAndLanes->carriageway;
-						$bearing; //te bepalen uit dichtstbijzijnde DRIP van assetwebsite*/
+		// Get declared namespaces (prefix => URI)
+		$docNamespaces = $xml->getDocNamespaces(true);
 
-						//check if latitude and longitude are available
-						if (isset($vmsRecord->vmsRecord->vmsLocation->locationForDisplay->longitude) && isset($vmsRecord->vmsRecord->vmsLocation->locationForDisplay->latitude)) {
+		// Register namespaces for XPath queries
+		foreach ($docNamespaces as $prefix => $uri) {
+			if ($prefix === '') continue; // default namespace has empty prefix; skip
+			$xml->registerXPathNamespace($prefix, $uri);
+		}
 
-							//insert in database
-							$qry = "INSERT INTO `driptable_new` SET
-							`vmsUnitRecord_id` = '".mysqli_real_escape_string($db['link'], $vmsUnitRecord['id'])."',
-							`vmsUnitRecord_version` = '".mysqli_real_escape_string($db['link'], $vmsUnitRecord['version'])."',
-							`vmsIndex` = '".mysqli_real_escape_string($db['link'], $vmsRecord['vmsIndex'])."',
-							`vmsDescription` = '".mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsDescription->values->value)."',
-							`vmsPhysicalMounting` = ". (
-								isset($vmsRecord->vmsRecord->vmsPhysicalMounting)
-									? "'" . mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsPhysicalMounting) . "'"
-									: 'NULL'
-								) .",
-							`vmsType` = ". (
-								isset($vmsRecord->vmsRecord->vmsType)
-									? "'" . mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsType) . "'"
-									: 'NULL'
-								) .",
-							`longitude` = '".mysqli_real_escape_string($db['link'],  $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->longitude)."',
-							`latitude` = '".mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->latitude)."',
-							`location` = ST_PointFromText('POINT(".mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->longitude)." ".mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->latitude).")'),
-							`carriageway` = ". (
-								isset($vmsRecord->vmsRecord->vmsLocation->supplementaryPositionalDescription->affectedCarriagewayAndLanes->carriageway)
-									? "'" . mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsLocation->supplementaryPositionalDescription->affectedCarriagewayAndLanes->carriageway) . "'"
-									: 'NULL'
-								) .",
-							`bearing` = NULL";
-							/*ON DUPLICATE KEY UPDATE
-							`vmsUnitRecord_version` = '".mysqli_real_escape_string($db['link'], $vmsUnitRecord['version'])."',
-							`vmsDescription` = '".mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsDescription->values->value)."',
-							`vmsPhysicalMounting` = ". (
-								isset($vmsRecord->vmsRecord->vmsPhysicalMounting)
-									? "'" . mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsPhysicalMounting) . "'"
-									: 'NULL'
-								) .",
-							`vmsType` = ". (
-								isset($vmsRecord->vmsRecord->vmsType)
-									? "'" . mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsType) . "'"
-									: 'NULL'
-								) .",
-							`longitude` = '".mysqli_real_escape_string($db['link'],  $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->longitude)."',
-							`latitude` = '".mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->latitude)."',
-							`location` = ST_PointFromText('POINT(".mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->longitude)." ".mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->latitude).")'),
-							`carriageway` = ". (
-								isset($vmsRecord->vmsRecord->vmsLocation->supplementaryPositionalDescription->affectedCarriagewayAndLanes->carriageway)
-									? "'" . mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsLocation->supplementaryPositionalDescription->affectedCarriagewayAndLanes->carriageway) . "'"
-									: 'NULL'
-								) .",
-							`bearing` = NULL";*/
-							//echo $qry; exit;
-							mysqli_query($db['link'], $qry);
-							if (mysqli_errno($db['link'])) {
-								write_log(mysqli_error($db['link']));
+		// Find all vmsController nodes via XPath
+		$controllers = [];
+		$controllers = $xml->xpath('//vms:vmsController');
+		if ($controllers === false) $controllers = [];
+
+		foreach ($controllers as $ctrl) {
+			// Attributes usually available as array access
+			$id = isset($ctrl['id']) ? (string)$ctrl['id'] : null;
+			$version = isset($ctrl['version']) ? (string)$ctrl['version'] : null;
+
+			// Find all vms in vmsController nodes via XPath
+			$vmses = [];
+			$vmses = $ctrl->xpath('.//vms:vms[not(ancestor::vms:vms)]');
+			if ($vmses === false) $vmses = [];
+
+			foreach ($vmses as $vms) {
+
+				// Use XPath for children in their namespaces to be robust
+				$vmsIndex = null;
+				$description = null;
+				$bearing = null;
+				$latitude = null;
+				$longitude = null;
+				$physicalSupport = null;
+				$vmsType = null;
+				$carriageway = null;
+
+				// Attributes usually available as array access
+				$vmsIndex = isset($vms['vmsIndex']) ? (string)$vms['vmsIndex'] : null;
+
+				// description com:value — search descendants (keep within this controller->vms)
+				$valNodes = $vms->xpath(".//com:value");
+				if ($valNodes && count($valNodes) > 0) $description = trim((string)$valNodes[0]);
+
+				// loc:bearing, loc:latitude, loc:longitude
+				$bNodes = $vms->xpath(".//loc:bearing");
+				if ($bNodes && count($bNodes) > 0) $bearing = trim((string)$bNodes[0]);
+
+				$latNodes = $vms->xpath(".//loc:latitude");
+				if ($latNodes && count($latNodes) > 0) $latitude = trim((string)$latNodes[0]);
+
+				$lonNodes = $vms->xpath(".//loc:longitude");
+				if ($lonNodes && count($lonNodes) > 0) $longitude = trim((string)$lonNodes[0]);
+
+				// vms:physicalSupport
+				$psNodes = $vms->xpath(".//vms:physicalSupport");
+				if ($psNodes && count($psNodes) > 0) $physicalSupport = trim((string)$psNodes[0]);
+
+				// vms:vmsType
+				$typeNodes = $vms->xpath(".//vms:vmsType");
+				if ($typeNodes && count($typeNodes) > 0) $vmsType = trim((string)$typeNodes[0]);
+
+				// loc:carriageway — assume one inner carriageway inside the outer node
+				$outer = $vms->xpath(".//loc:carriageway");
+				if ($outer && count($outer) > 0) {
+					// try to get the nested carriageway value first
+					$inner = $outer[0]->xpath(".//loc:carriageway");
+					if ($inner && count($inner) > 0) {
+						$carriageway = trim((string)$inner[0]);
+					} else {
+						// fallback to outer node's text
+						$carriageway = trim((string)$outer[0]);
+					}
+				}
+
+				//echo "id: $id, version: $version, index:$vmsIndex, value: $description, bearing: $bearing, lat: $latitude, lon: $longitude, physicalSupport: $physicalSupport, vmsType: $vmsType, carriageway: $carriageway\n";
+
+				//check if latitude and longitude are available
+				if (isset($latitude) && isset($longitude)) {
+
+					//insert in database
+					$qry = "INSERT INTO `driptable_new` SET
+					`vmsUnitRecord_id` = '".mysqli_real_escape_string($db['link'], $id)."',
+					`vmsUnitRecord_version` = '".mysqli_real_escape_string($db['link'], $version)."',
+					`vmsIndex` = '".mysqli_real_escape_string($db['link'], $vmsIndex)."',
+					`vmsDescription` = '".mysqli_real_escape_string($db['link'], $description)."',
+					`vmsPhysicalMounting` = ". (
+						isset($physicalSupport)
+							? "'" . mysqli_real_escape_string($db['link'], $physicalSupport) . "'"
+							: 'NULL'
+						) .",
+					`vmsType` = ". (
+						isset($vmsType)
+							? "'" . mysqli_real_escape_string($db['link'], $vmsType) . "'"
+							: 'NULL'
+						) .",
+					`longitude` = '".mysqli_real_escape_string($db['link'],  $longitude)."',
+					`latitude` = '".mysqli_real_escape_string($db['link'], $latitude)."',
+					`location` = ST_PointFromText('POINT(".mysqli_real_escape_string($db['link'], $longitude)." ".mysqli_real_escape_string($db['link'], $latitude).")'),
+					`carriageway` = ". (
+						isset($carriageway)
+							? "'" . mysqli_real_escape_string($db['link'], $carriageway) . "'"
+							: 'NULL'
+						) .",
+					`bearing` = '".mysqli_real_escape_string($db['link'],  $bearing)."'";
+					//echo $qry; exit;
+					mysqli_query($db['link'], $qry);
+					if (mysqli_errno($db['link'])) {
+						write_log(mysqli_error($db['link']));
+					}
+					else {
+						//get details from assetwebsite
+						$use_assetwebsite = FALSE;
+						$qry = "SELECT `code`, `naam`, `aansturing`, `latitude` ,`longitude`, `location`, `heading`, `type`, ST_Distance_Sphere(`location`, ST_PointFromText('POINT(".mysqli_real_escape_string($db['link'], $longitude)." ".mysqli_real_escape_string($db['link'], $latitude).")')) AS `distance` 
+						FROM `assetwebsite`
+						ORDER BY `distance` ASC
+						LIMIT 1";
+						$res = mysqli_query($db['link'], $qry);
+						if (mysqli_errno($db['link'])) {
+							write_log(mysqli_error($db['link']));
+						}
+						elseif (mysqli_num_rows($res)) {
+							$data = mysqli_fetch_assoc($res);
+							if ($data['distance'] <= 50) {
+								$use_assetwebsite = TRUE;
 							}
-							else {
-								//get details from assetwebsite
-								$use_assetwebsite = FALSE;
-								$qry = "SELECT `code`, `naam`, `aansturing`, `latitude` ,`longitude`, `location`, `heading`, `type`, ST_Distance_Sphere(`location`, ST_PointFromText('POINT(".mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->longitude)." ".mysqli_real_escape_string($db['link'], $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->latitude).")')) AS `distance` 
-								FROM `assetwebsite`
-								ORDER BY `distance` ASC
-								LIMIT 1";
-								$res = mysqli_query($db['link'], $qry);
-								if (mysqli_num_rows($res)) {
-									$data = mysqli_fetch_assoc($res);
-									if ($data['distance'] <= 50) {
-										$use_assetwebsite = TRUE;
-									}
-								}
+						}
 
-								//add to output
-								if ($use_assetwebsite == TRUE) {
-									//use assetwebsite data
-									$output[] = array(
-										'id' => (string) $vmsUnitRecord['id'] . '_' . $vmsRecord['vmsIndex'],
-										'dsc' => (string) $vmsRecord->vmsRecord->vmsDescription->values->value,
-										'lon' => (float) $data['longitude'],
-										'lat' => (float) $data['latitude'],
-										'rot' => $data['heading'],
-										'cd' => $data['code'],
-										'nm' => $data['naam'],
-										'as' => $data['aansturing'],
-										'tp' => $data['type']
-									);
-								}
-								else {
-									//no assetwebsite match found
-									$output[] = array(
-										'id' => (string) $vmsUnitRecord['id'] . '_' . $vmsRecord['vmsIndex'],
-										'dsc' => (string) $vmsRecord->vmsRecord->vmsDescription->values->value,
-										'lon' => (float) $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->longitude,
-										'lat' => (float) $vmsRecord->vmsRecord->vmsLocation->locationForDisplay->latitude,
-										'rot' => null,
-										'cd' => '',
-										'nm' => '',
-										'as' => '',
-										'tp' => ''
-									);
-								}
-							}
+						//add to output
+						if ($use_assetwebsite == TRUE) {
+							//use assetwebsite data
+							$output[] = array(
+								'id' => (string) $id . '_' . $vmsIndex,
+								'dsc' => (string) $description,
+								'lon' => (float) $data['longitude'],
+								'lat' => (float) $data['latitude'],
+								'rot' => $data['heading'],
+								'cd' => $data['code'],
+								'nm' => $data['naam'],
+								'as' => $data['aansturing'],
+								'tp' => $data['type']
+							);
 						}
 						else {
-							write_log('latlng missing for ' . $vmsUnitRecord['id'] . ' (' . $vmsRecord->vmsRecord->vmsDescription->values->value . ')');
+							//no assetwebsite match found
+							$output[] = array(
+								'id' => (string) $id . '_' . $vmsIndex,
+								'dsc' => (string) $description,
+								'lon' => (float) $longitude,
+								'lat' => (float) $latitude,
+								'rot' => (int) $bearing,
+								'cd' => '',
+								'nm' => '',
+								'as' => '',
+								'tp' => ''
+							);
 						}
 					}
+				}
+				else {
+					write_log('latlng missing for ' . $id . ' (' . $description . ')');
 				}
 			}
 		}
