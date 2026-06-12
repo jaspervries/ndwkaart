@@ -1,6 +1,6 @@
 /*
 	ndwkaart - matrixbordenkaart
-	Copyright (C) 2018, 2025 Jasper Vries
+	Copyright (C) 2018, 2025-2026 Jasper Vries
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -360,9 +360,12 @@ function openMapPopup(e, item) {
 	var popupcontentheader = '<h1>'+ ((item.cd.length > 0) ? item.cd : item.dsc) +'</h1>'
 		+ '<p>'
 		+ ((item.nm.length > 0) ? 'Naam: ' + item.nm + '<br>' : '')
-		+ ((item.as.length > 0) ? 'Wegbeheerder: ' + item.as + '<br>' : '')
-		+ ((item.tp.length > 0) ? 'Type DRIP: ' + item.tp + '<br>' : '');
-	var popupcontentfooter = '<span class=xsmall>NDW id: ' + item.id + '</span>'
+		+ ((item.as.length > 0) ? 'Wegbeheerder: ' + item.as + '<br>' : '');
+	var popupcontentfooter = ((item.cw.length > 0) ? 'Rijbaan: ' + item.cw + '<br>' : '')
+		+ ((item.ps.length > 0) ? 'Ondersteuningsconstructie: ' + item.ps + '<br>' : '')
+		+ ((item.vt.length > 0) ? 'Paneel: ' + item.vt + '<br>' : '')
+		+ ((item.tp.length > 0) ? 'Type: ' + item.tp + '<br>' : '')
+		+ '<span class=xsmall>NDW id: ' + item.id + '</span>'
 		+ '</p>';
 	
 	//popup with image
@@ -376,6 +379,7 @@ function openMapPopup(e, item) {
 				popupcontentheader 
 				+ 'Status: ' + ((data.drip.data[item.id].w == 1) ? 'operationeel' : 'niet operationeel') + '<br>'
 				+ '<img id="popupimage" src="' + imageurl + '" width="' + theImage.width + '" height="' + theImage.height + '"><br>'
+				+ 'Beeld laatst gewijzigd: ' + ((typeof data.drip.data[item.id].u !== 'undefined') ? data.drip.data[item.id].u : 'onbekend') + '<br>'
 				+ popupcontentfooter)
 			.openOn(map);
 		};
@@ -394,6 +398,7 @@ function openMapPopup(e, item) {
 			popupcontentheader 
 			+ 'Status: ' + ((data.drip.data[item.id].w == 1) ? 'operationeel' : 'niet operationeel') + '<br>'
 			+ '<span class="textdrip">' + textlines + '</span><br>'
+			+ 'Tekst laatst gewijzigd: ' + ((typeof data.drip.data[item.id].u !== 'undefined') ? data.drip.data[item.id].u : 'onbekend') + '<br>'
 			+ popupcontentfooter)
 		.openOn(map);
 	}
@@ -402,6 +407,7 @@ function openMapPopup(e, item) {
 			popupcontentheader 
 			+ 'Status: ' + ((data.drip.data[item.id].w == 1) ? 'operationeel' : 'niet operationeel') + '<br>'
 			+ 'Geen afbeelding<br>'
+			+ 'Laatst gewijzigd: ' + ((typeof data.drip.data[item.id].u !== 'undefined') ? data.drip.data[item.id].u : 'onbekend') + '<br>'
 			+ popupcontentfooter)
 		.openOn(map);
 	}
