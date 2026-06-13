@@ -290,11 +290,34 @@ function drawLayer(layer) {
 				if (map.getBounds().contains(L.latLng(item.lat, item.lon))) {	
 					//decide icon
 					var iconurl = 'images/incidents/unknown.png';
-					if (item.type == 'Accident') {
+					if ((item.type == 'VehicleObstruction') && (item.subtype == 'brokenDownVehicle')) {
+						iconurl = 'images/incidents/brokendownvehicle.png';
+					}
+					else if ((item.type == 'VehicleObstruction') && (item.subtype == 'other') && (typeof item.generalPublicComment !== 'undefined') && (item.generalPublicComment.toLowerCase() == 'pijlwagen')) {
+						iconurl = 'images/incidents/pijlwagen.png';
+					}
+					else if ((item.type == 'Accident') || (item.type == 'VehicleObstruction') || (item.type == 'AnimalPresenceObstruction') || (item.type == 'MaintenanceWorks')) {
 						iconurl = 'images/incidents/' + item.type.toLowerCase() + '.png';
 					}
-					else if ((item.type == 'VehicleObstruction') && (item.vehicleObstructionType == 'brokenDownVehicle')) {
-						iconurl = 'images/incidents/' + item.vehicleObstructionType.toLowerCase() + '.png';
+					else if ((item.type == 'GeneralObstruction') && (['clearanceWork'].includes(item.subtype))) {
+						iconurl = 'images/incidents/maintenanceworks.png';
+					}
+					else if ((item.type == 'PoorEnvironmentConditions') && (['denseFog', 'fog', 'patchyFog', 'severeSmog', 'visibilityReduced'].includes(item.subtype))) {
+						iconurl = 'images/incidents/fog.png';
+					}
+					else if ((item.type == 'PoorEnvironmentConditions') && (['hail', 'heavyRain', 'thunderstorms'].includes(item.subtype))) {
+						iconurl = 'images/incidents/heavyrain.png';
+					}
+					else if (((item.type == 'PoorEnvironmentConditions') && (['blizzard',  'blowingSnow', 'heavySnowfall', 'winterStorm'].includes(item.subtype)))
+					|| ((item.type == 'WeatherRelatedRoadConditions') && (['blackIce', 'freezingOfWetRoads', 'ice', 'icyPatches', 'snowDrifts', 'wetAndIcyRoad'].includes(item.subtype)))) {
+						iconurl = 'images/incidents/snow.png';
+					}
+					else if ((item.type == 'PoorEnvironmentConditions') && (['gales', 'gustyWinds', 'hurricaneForceWinds', 'stormForceWinds', 'strongGustsOfWind', 'strongWinds', 'veryStrongGustsOfWind'].includes(item.subtype))) {
+						iconurl = 'images/incidents/wind.png';
+					}
+					else if (((item.type == 'WeatherRelatedRoadConditions') && (['slippery', 'surfaceWater'].includes(item.subtype)))
+					|| ((item.type == 'NonWeatherRelatedRoadConditions') && (['mudOnRoad', 'oilOnRoad', 'petrolOnRoad'].includes(item.subtype)))) {
+						iconurl = 'images/incidents/slippery.png';
 					}
 					//draw marker
 					var marker = L.marker([item.lat, item.lon], {
