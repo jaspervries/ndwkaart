@@ -134,6 +134,15 @@ if ($datex !== FALSE) {
 						case 'sit:PoorEnvironmentConditions':
 							$subtypeobj = 'sit:poorEnvironmentType';
 							break;
+						case 'sit:GeneralNetworkManagement':
+							$subtypeobj = 'sit:generalNetworkManagementType';
+							break;
+						case 'sit:RoadOrCarriagewayOrLaneManagement':
+							$subtypeobj = 'sit:roadOrCarriagewayOrLaneManagementType';
+							break;
+						case 'sit:SpeedManagement':
+							$subtypeobj = 'sit:speedManagementType';
+							break;
 						default:
 							$subtypeobj = null;
 					}
@@ -150,6 +159,14 @@ if ($datex !== FALSE) {
 					//generalPublicComment
 					$Nodes = $situation->xpath(".//sit:generalPublicComment/sit:comment/com:values/com:value");
 					if ($Nodes && count($Nodes) > 0) $output_this['generalPublicComment'] = trim((string)$Nodes[0]);
+
+					//operatorActionStatus
+					$Nodes = $situation->xpath(".//sit:operatorActionStatus");
+					if ($Nodes && count($Nodes) > 0) $output_this['operatorActionStatus'] = trim((string)$Nodes[0]);
+
+					//temporarySpeedLimit
+					$Nodes = $situation->xpath(".//sit:temporarySpeedLimit");
+					if ($Nodes && count($Nodes) > 0) $output_this['temporarySpeedLimit'] = trim((string)$Nodes[0]);
 
 					//add to output
 					$output[$id] = $output_this;

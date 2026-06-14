@@ -290,17 +290,20 @@ function drawLayer(layer) {
 				if (map.getBounds().contains(L.latLng(item.lat, item.lon))) {	
 					//decide icon
 					var iconurl = 'images/incidents/unknown.png';
-					if ((item.type == 'VehicleObstruction') && (item.subtype == 'brokenDownVehicle')) {
-						iconurl = 'images/incidents/brokendownvehicle.png';
-					}
-					else if ((item.type == 'VehicleObstruction') && (item.subtype == 'other') && (typeof item.generalPublicComment !== 'undefined') && (item.generalPublicComment.toLowerCase() == 'pijlwagen')) {
+					if ((item.type == 'VehicleObstruction') && (item.subtype == 'other') && (typeof item.generalPublicComment !== 'undefined') && (item.generalPublicComment.toLowerCase() == 'pijlwagen')) {
 						iconurl = 'images/incidents/pijlwagen.png';
 					}
-					else if ((item.type == 'Accident') || (item.type == 'VehicleObstruction') || (item.type == 'AnimalPresenceObstruction') || (item.type == 'MaintenanceWorks')) {
-						iconurl = 'images/incidents/' + item.type.toLowerCase() + '.png';
+					else if ((item.type == 'SpeedManagement') && (typeof item.temporarySpeedLimit !== 'undefined') && ([30, 50, 70, 90].includes(Math.round(parseFloat(item.temporarySpeedLimit))))) {
+						iconurl = 'images/incidents/temporarySpeedLimit' + Math.round(parseFloat(item.temporarySpeedLimit)) + '.png';
 					}
-					else if ((item.type == 'GeneralObstruction') && (['clearanceWork'].includes(item.subtype))) {
-						iconurl = 'images/incidents/maintenanceworks.png';
+					else if (((item.type == 'GeneralObstruction') && (['clearanceWork', 'peopleOnRoadway', 'cyclistsOnRoadway'].includes(item.subtype)))
+					|| ((item.type == 'GeneralNetworkManagement') && (['bridgeSwingInOperation'].includes(item.subtype)))
+					|| ((item.type == 'VehicleObstruction') && (['brokenDownVehicle'].includes(item.subtype)))
+					|| ((item.type == 'RoadOrCarriagewayOrLaneManagement') && (['carriagewayClosures', 'laneClosures'].includes(item.subtype)))) {
+						iconurl = 'images/incidents/' + item.subtype + '.png';
+					}
+					else if ((item.type == 'Accident') || (item.type == 'VehicleObstruction') || (item.type == 'AnimalPresenceObstruction') || (item.type == 'MaintenanceWorks') || (item.type == 'SpeedManagement') || (item.type == 'GeneralObstruction')) {
+						iconurl = 'images/incidents/' + item.type + '.png';
 					}
 					else if ((item.type == 'PoorEnvironmentConditions') && (['denseFog', 'fog', 'patchyFog', 'severeSmog', 'visibilityReduced'].includes(item.subtype))) {
 						iconurl = 'images/incidents/fog.png';
