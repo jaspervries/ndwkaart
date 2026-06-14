@@ -405,7 +405,7 @@ function openMapPopup(e, item) {
 				popupcontentheader 
 				+ 'Status: ' + ((data.drip.data[item.id].w == 1) ? 'operationeel' : 'niet operationeel') + '<br>'
 				+ '<img id="popupimage" src="' + imageurl + '" width="' + theImage.width + '" height="' + theImage.height + '"><br>'
-				+ 'Beeld laatst gewijzigd: ' + ((typeof data.drip.data[item.id].u !== 'undefined') ? data.drip.data[item.id].u : 'onbekend') + '<br>'
+				+ 'Beeld laatst gewijzigd: ' + ((typeof data.drip.data[item.id].u !== 'undefined') ? convertDate(data.drip.data[item.id].u) : 'onbekend') + '<br>'
 				+ popupcontentfooter)
 			.openOn(map);
 		};
@@ -424,7 +424,7 @@ function openMapPopup(e, item) {
 			popupcontentheader 
 			+ 'Status: ' + ((data.drip.data[item.id].w == 1) ? 'operationeel' : 'niet operationeel') + '<br>'
 			+ '<span class="textdrip">' + textlines + '</span><br>'
-			+ 'Tekst laatst gewijzigd: ' + ((typeof data.drip.data[item.id].u !== 'undefined') ? data.drip.data[item.id].u : 'onbekend') + '<br>'
+			+ 'Tekst laatst gewijzigd: ' + ((typeof data.drip.data[item.id].u !== 'undefined') ? convertDate(data.drip.data[item.id].u) : 'onbekend') + '<br>'
 			+ popupcontentfooter)
 		.openOn(map);
 	}
@@ -433,7 +433,7 @@ function openMapPopup(e, item) {
 			popupcontentheader 
 			+ 'Status: ' + ((data.drip.data[item.id].w == 1) ? 'operationeel' : 'niet operationeel') + '<br>'
 			+ 'Geen afbeelding<br>'
-			+ 'Laatst gewijzigd: ' + ((typeof data.drip.data[item.id].u !== 'undefined') ? data.drip.data[item.id].u : 'onbekend') + '<br>'
+			+ 'Laatst gewijzigd: ' + ((typeof data.drip.data[item.id].u !== 'undefined') ? convertDate(data.drip.data[item.id].u) : 'onbekend') + '<br>'
 			+ popupcontentfooter)
 		.openOn(map);
 	}
@@ -456,7 +456,7 @@ function openPopupIncidents(e, item) {
 	popupcontent += 'Subtype: ' + item.subtype + '<br>';
 	$.each(item, function(key, val) {
 		if ((key != 'type') && (key != 'subtype') && (key != 'lat') && (key != 'lon')) {
-			popupcontent += key + ': ' + val + '<br>';
+			popupcontent += key + ': ' + ((key == 'overallStartTime') ? convertDate(val) : val) + '<br>';
 		}
 	});
 	popupcontent += '</p>';
@@ -477,7 +477,7 @@ function dataSourceAge(layer, created, previouscreated) {
 		if ($('#data_warnings li#' + layer).length === 0) {
 			//add warning
 			if ((previouscreated == 0) && (created > 0)) {
-				$('#data_warnings').append('<li id="' + layer + '">Datastroom <i>' + layer + '</i> wordt bijgewerkt. Huidig beeld ' + date.toString() +  '</li>');
+				$('#data_warnings').append('<li id="' + layer + '">Datastroom <i>' + layer + '</i> wordt bijgewerkt. Huidig beeld ' + convertDate(date) +  '</li>');
 			}
 			else if (previouscreated == 0) {
 				$('#data_warnings').append('<li id="' + layer + '">Datastroom <i>' + layer + '</i> wordt bijgewerkt.</li>');
@@ -567,6 +567,25 @@ function drawTileLayerGUI() {
 		setMapTileLayer(parseInt(tile_id));
 		$(this).prop('checked');
 	});
+}
+
+/*
+* helper function
+*/
+function convertDate(date) {
+	var date2 = date;
+	if (!Number.isInteger(date)) {
+		date2 = Date.parse(date);
+	}
+	if (date2 == NaN) return date;
+	return new Intl.DateTimeFormat('nl-NL', {
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+			hour: "numeric",
+			minute: "numeric",
+			second: "numeric"
+		}).format(date2);
 }
 
 /*
