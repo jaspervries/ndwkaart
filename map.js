@@ -165,7 +165,7 @@ function getData(layer, static=false) {
 		}
 		//set next update
 		clearTimeout(timeout_handle[layer]);
-		timeout_handle[layer] = setTimeout(getData, timeout, layer, false);
+		timeout_handle[layer] = setTimeout(getData, timeout, layer, static);
 	});
 }
 
