@@ -59,19 +59,24 @@
     <p>Rechtsboven kun je kiezen welke kaartlagen wilt zien. De data van iedere kaartlaag wordt op de achtergrond automatisch ververst.Dit gebeurt ongeveer iedere minuut. Achter de naam van de kaartlaag kun je zien wat het tijdstip van de laatste update is. Als je de website opent en er zit verder niemand op de site, dan duurt het even om de actuele data op te halen. Je ziet hiervan een melding in beeld, welke verdwijnt zodra actuele gegevens getoond worden.</p>
     <p>Als iets ontbreekt of niet klopt in de datasets, dan wordt dit vanzelf niet of onjuist weergegeven. De data van NDW wordt getoond zoals deze is; er vindt geen controle op volledigheid of juistheid plaats.</p>
 
-    <h3>Kaartlaag: drip</h3>
-    <p>De kaartlaag <em>drip</em> toont locaties van Dynamische RouteInformatie Panelen (DRIPs). Als je op een DRIP klikt, dan krijg je in een popup het actuele beeld te zien. Het beeld in de popup ververst niet automatisch, daarvoor moet je de popup sluiten en opnieuw openen.</p>
+    <h3>Kaartlaag: DRIPs</h3>
+    <p>Deze kaartlaag toont locaties van Dynamische RouteInformatie Panelen (DRIPs). Als je op een DRIP klikt, dan krijg je in een popup het actuele beeld te zien. Het beeld in de popup ververst niet automatisch, daarvoor moet je de popup sluiten en opnieuw openen.</p>
     <p>Het inlezen van locaties van DRIPs gebeurt (nog) niet automatisch. Hierdoor kunnen DRIPs ontbreken of DRIPs die niet meer bestaan juist nog getoond worden. Aanvullende informatie wordt uit de assetwebsite overgenomen, wanneer een match kan worden gemaakt op basis van locatie van de DRIP. Als de locatie in een van beide databronnen te veel afwijkt, worden gegevens uit de assetwebsite niet overgenomen. Het kan ook voorkomen dat DRIPs niet aanwezig zijn in de assetwebsite.</p>
 
-    <h3>Kaartlaag: msi</h3>
-    <p>De kaartlaag <em>msi</em> (Message Sign Interface) toont rijstrooksignalering, ook wel matrixsignaalgevers of in de volksmond matrixborden genoemd. De matrixsignaalgevers worden alleen getoond als er op tenminste &eacute;&eacute;n signaalgever in een raai een beeld wordt getoond. Een raai zijn alle signaalgevers die naast elkaar boven &eacute;&eacute;n rijbaan hangen.</p>
+    <h3>Kaartlaag: Matrixborden</h3>
+    <p>Deze kaartlaag toont rijstrooksignalering, ook wel matrixsignaalgevers of in de volksmond dus matrixborden genoemd. De matrixsignaalgevers worden alleen getoond als er op tenminste &eacute;&eacute;n signaalgever in een raai een beeld wordt getoond. Een raai zijn alle signaalgevers die naast elkaar boven &eacute;&eacute;n rijbaan hangen.</p>
     <p>Als je met de muisaanwijzer op een raai signaalgevers gaat staan, dan zie je het wegnummer en hectometrering.</p>
     <p>Als je (te) ver uitzoomt, dan worden de matrixborden over elkaar heen getoond. Dit is in het bijzonder ook het geval bij parallelrijbanen. Zoom in dat geval verder in om te zien op welke rijbaan de raai betrekking heeft.</p>
     <p>De gegevens in deze kaartlaag zijn tot een minuut ouder dan het tijdstip dat wordt getoond. In tegenstelling tot de andere kaartlagen is er in de datastroom van NDW namelijk geen publicatietijdstip aanwezig en wordt in plaats daarvan het tijdstip getoond van het moment dat de gegevens door de server bij NDW zijn opgehaald.</p>
     <p>Het inlezen van locaties van matrixsignaalgevers gebeurt (nog) niet automatisch. Hierdoor kunnen matrixsignaalgevers ontbreken.</p>
 
-    <h3>Kaartlaag: srti</h3>
-    <p>De kaartlaag <em>srti</em> toont &quot;Veiligheidsgerelateerde berichten (SRTI = Safety-Related Traffic Information) zijn die type situaties opgenomen die relevant worden geacht te vermelden aan de weggebruikers in het kader van de algehele veiligheid&quot;. Dit zijn onder andere ongevallen en pechgevallen, wat ook aan de pictogrammen op de kaart te zien is. Wanneer er sprake is van een andere situatie, dan wordt een pictogram met een lege driehoek getoond. Klik op het pictogram om een popup te openen met meer informatie. Op dit moment wordt enkel de (Engelstalige) ruwe informatie uit de datastroom getoond.</p>
+    <h3>Kaartlaag: Veiligheidsberichten</h3>
+    <p>Deze kaartlaag toont Veiligheidsgerelateerde berichten (SRTI = Safety-Related Traffic Information). Dit zijn &quot;die type situaties die relevant worden geacht te vermelden aan de weggebruikers in het kader van de algehele veiligheid&quot;. Dit zijn onder andere ongevallen en pechgevallen, wat ook aan de pictogrammen op de kaart te zien is. Wanneer er sprake is van een andere situatie, dan wordt een pictogram met een lege driehoek getoond. Klik op het pictogram om een popup te openen met meer informatie. Op dit moment wordt enkel een selectie van de (Engelstalige) ruwe informatie uit de datastroom getoond.</p>
+    <p>Deze kaartlaag toont een subset van de gegevens die ook in de kaartlaag <em>Situatieberichten</em> zitten.</p>
+
+    <h3>Kaartlaag: Situatieberichten</h3>
+    <p>Deze kaartlaag toont ongevalideerde situatieberichten over de toestand van het verkeersnetwerk. Het bevat dezelfde informatie als de kaartlaag <em>Veiligheidsberichten</em>, aangevuld met snelheidsbeperkingen, wegafsluitingen en brugopeningen. Aan het pictogram op de kaart is te zien om wat voor soort bericht het gaat. Wanneer er sprake is van een andere situatie, dan wordt een pictogram met een lege driehoek getoond. Klik op het pictogram om een popup te openen met meer informatie. Op dit moment wordt enkel een selectie van de (Engelstalige) ruwe informatie uit de datastroom getoond.</p>
+    <p>Omdat deze kaartlaag ook de gegevens uit de kaartlaag <em>Veiligheidsberichten</em> laat zien, is het weinig zinvol om deze beide kaartlagen gelijktijdig aan te zetten. Maar het kan wel.</p>
 
     <h2>Kaartachtergrond</h2>
     <p>Rechtsboven kun je ook de kaartachtergrond wijzigen, door eerst het deelvenster uit te vouwen en daarna een van de opties te kiezen.</p>

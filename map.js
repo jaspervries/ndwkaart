@@ -20,7 +20,12 @@
 * initialize global variables
 */
 var map; //map object
-var layers = ['drip', 'msi', 'srti']; //definition list of dynamic layers
+var layers = [ //definition list of dynamic layers
+	{id: 'drip', name: 'DRIPs' },
+	{id: 'msi', name: 'Matrixborden'},
+	{id: 'srti', name: 'Veiligheidsberichten'},
+	{id: 'sit', name: 'Situatieberichten'}
+];
 var staticlayers = ['driptable'] //definition list of static layers
 var activemaplayers = [];
 
@@ -78,7 +83,7 @@ function initMap() {
 	map.on('load', function() {
 		for (var i = 0; i < layers.length; i++) {
 			//draw map layers
-			getData(layers[i]);
+			getData(layers[i].id);
 		}
 		for (var i = 0; i < staticlayers.length; i++) {
 			//draw map layers
@@ -128,7 +133,7 @@ function updateMapLayers() {
 	}
 	for (var i = 0; i < layers.length; i++) {
 		//draw map layers
-		drawLayer(layers[i]);
+		drawLayer(layers[i].id);
 	}
 }
 
@@ -214,7 +219,7 @@ function drawLayer(layer) {
 		//add new markers
 		var newmarkers = [];
 		//check if layer is active
-		if ((activemaplayers[layers.indexOf(layer)] == true) && (typeof data[layer] !== 'undefined')) {
+		if ((activemaplayers[layers.map(function(e) { return e.id; }).indexOf(layer)] == true) && (typeof data[layer] !== 'undefined')) {
 			$.each(data[layer].data, function(i, item) {
 				//only draw what is in zoom
 				if (map.getBounds().contains(L.latLng(item.lat, item.lon))) {	
@@ -246,7 +251,7 @@ function drawLayer(layer) {
 		//add new markers
 		var newmarkers = [];
 		//check if layer is active
-		if ((activemaplayers[layers.indexOf('drip')] == true) && (typeof data[layer] !== 'undefined')) {
+		if ((activemaplayers[layers.map(function(e) { return e.id; }).indexOf('drip')] == true) && (typeof data[layer] !== 'undefined')) {
 			$.each(data[layer].data, function(i, item) {
 				//only draw what is in zoom
 				if (map.getBounds().contains(L.latLng(item.lat, item.lon))) {	
@@ -274,9 +279,9 @@ function drawLayer(layer) {
 		}
 		markers[layer] = newmarkers;
 	}
-	else if (layer == 'srti') {
+	else if ((layer == 'srti') || (layer == 'sit')) {
 		/*
-		srti layer
+		srti layer/sit layer
 		this layer doesn't always contain all markers
 		to prevent a flicker effect, on each refresh a new layer is drawn and the old layer destroyed
 		a Leaflet layergroup may be useful here, but doesn't appear to add much value at this point
@@ -284,7 +289,7 @@ function drawLayer(layer) {
 		//add new markers
 		var newmarkers = [];
 		//check if layer is active
-		if ((activemaplayers[layers.indexOf(layer)] == true) && (typeof data[layer] !== 'undefined')) {
+		if ((activemaplayers[layers.map(function(e) { return e.id; }).indexOf(layer)] == true) && (typeof data[layer] !== 'undefined')) {
 			$.each(data[layer].data, function(i, item) {
 				//only draw what is in zoom
 				if (map.getBounds().contains(L.latLng(item.lat, item.lon))) {	
@@ -329,7 +334,7 @@ function drawLayer(layer) {
 						riseOnHover: true,
 						title: item.type
 					}).on('click', function(e) {
-						openPopupIncidents(e, item);
+						openPopupIncidents(e, item, layer);
 					}).addTo(map);
 					//push marker to array
 					newmarkers.push(marker);
@@ -447,11 +452,14 @@ function openMapPopup(e, item) {
 	}
 }
 
-function openPopupIncidents(e, item) {
+function openPopupIncidents(e, item, layer) {
 	//TODO: update popup contents when it is open
 	var popup = L.popup()
     .setLatLng(e.latlng);
-	var popupcontent = '<h1>Veiligheidsgerelateerd bericht</h1><p>';
+	var popupcontent;
+	console.log(layer);
+	if (layer == 'srti') popupcontent = '<h1>Veiligheidsgerelateerd bericht</h1><p>';
+	else popupcontent = '<h1>Situatiebericht</h1><p>';
 	popupcontent += 'Type: ' + item.type + '<br>';
 	popupcontent += 'Subtype: ' + item.subtype + '<br>';
 	$.each(item, function(key, val) {
@@ -475,15 +483,24 @@ function dataSourceAge(layer, created, previouscreated) {
 	if (((Date.now()/1000) - created) > 300) { //5 minutes
 		//check if warning exists
 		if ($('#data_warnings li#' + layer).length === 0) {
-			//add warning
-			if ((previouscreated == 0) && (created > 0)) {
-				$('#data_warnings').append('<li id="' + layer + '">Datastroom <i>' + layer + '</i> wordt bijgewerkt. Huidig beeld ' + convertDate(date) +  '</li>');
-			}
-			else if (previouscreated == 0) {
-				$('#data_warnings').append('<li id="' + layer + '">Datastroom <i>' + layer + '</i> wordt bijgewerkt.</li>');
+			//get layer name
+			var layername;
+			var key = layers.map(function(e) { return e.id; }).indexOf(layer);
+			if (key >= 0 && (typeof layers[key].name !== 'undefined')) {
+				layername = layers[key].name;
 			}
 			else {
-				$('#data_warnings').append('<li id="' + layer + '">Datastroom <i>' + layer + '</i> is meer dan 5 minuten oud.</li>');
+				layername = layer;
+			}
+			//add warning
+			if ((previouscreated == 0) && (created > 0)) {
+				$('#data_warnings').append('<li id="' + layer + '">Datastroom <i>' + layername + '</i> wordt bijgewerkt. Huidig beeld ' + convertDate(date) +  '</li>');
+			}
+			else if (previouscreated == 0) {
+				$('#data_warnings').append('<li id="' + layer + '">Datastroom <i>' + layername + '</i> wordt bijgewerkt.</li>');
+			}
+			else {
+				$('#data_warnings').append('<li id="' + layer + '">Datastroom <i>' + layername + '</i> is meer dan 5 minuten oud.</li>');
 			}
 		}
 		//(note: if warning exists it will be retained)
@@ -509,31 +526,34 @@ function setMapCookie() {
 function initLayerGUI() {
     //get map layers
 	$.each(layers, function(key, layer) {
-		if (typeof activemaplayers[key] !== 'undefined') {
-			activemaplayers[key] = false;
+		if (typeof activemaplayers[key.id] == 'undefined') {
+			activemaplayers[key.id] = false;
 		}
 		
-		$('#map-layers').append('<li><input type="checkbox" name="map-layer-' + layer + '" id="map-layer-' + layer + '"><label for="map-layer-' + layer + '">' + layer + ' <span class="lastupdate" title="tijdstip laatste update"></span></label></li>');
+		$('#map-layers').append('<li><input type="checkbox" name="map-layer-' + layer.id + '" id="map-layer-' + layer.id + '"><label for="map-layer-' + layer.id + '">' + layer.name + ' <span class="lastupdate" title="tijdstip laatste update"></span></label></li>');
 		//set active layers
 		if ((typeof onloadCookie !== 'undefined') && (typeof onloadCookie[3] !== 'undefined')) {
 			if (onloadCookie[3][key] >= 1) {
 				activemaplayers[key] = true;
-				$('#map-layer-' + layer).prop('checked', true);
+				$('#map-layer-' + layer.id).prop('checked', true);
 			}
 			else {
 				 activemaplayers[key] = false;
 			}
 		}
 		else {
-			activemaplayers[key] = true;
-			$('#map-layer-' + layer).prop('checked', true);
+			if (layer.id != 'sit') {
+				activemaplayers[key] = true;
+				$('#map-layer-' + layer.id).prop('checked', true);
+			}
 		}
 	});
 
 	$('#map-layers input[type=checkbox]').change( function() {
 		var layer = this.id.substr(10);
 		//get key from layers
-		var key = layers.indexOf(layer);
+		//var key = layers.indexOf(layer);
+		var key = layers.map(function(e) { return e.id; }).indexOf(layer);
 		//set activemaplayers
 		var enableState = $(this).prop('checked');
 		activemaplayers[key] = enableState;
@@ -598,11 +618,11 @@ $(function() {
 	initLayerGUI();
 	initMap();
 	for (var i = 0; i < layers.length; i++) {
-		//draw map layers
-		updateSource(layers[i]);
+		//update map layer data
+		updateSource(layers[i].id);
 	}
 	for (var i = 0; i < staticlayers.length; i++) {
-		//draw map layers
+		//update static map layer data
 		updateSource(staticlayers[i], true);
 	}
 	//shade mapoptions

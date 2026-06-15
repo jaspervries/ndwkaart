@@ -21,7 +21,7 @@ include_once('log.inc.php');
 require('config.cfg.php');
 $db['link'] = mysqli_connect($cfg_db['host'], $cfg_db['user'], $cfg_db['pass'], $cfg_db['db']);
 
-$layers = array('msi', 'drip', 'srti');
+$layers = array('msi', 'drip', 'srti', 'sit');
 
 if (in_array($_GET['lyr'], $layers)) {
     $json_update = array('nextrun' => 15);
